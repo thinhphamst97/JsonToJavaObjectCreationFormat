@@ -16,7 +16,7 @@ public class JSONServiceImpl implements JSONService {
     @Override
     public String getJavaConstructorFormat(LinkedHashMap<String, String> jsonMap) {
         StringBuilder constructor = new StringBuilder();
-        constructor.append("Constructor format: \n").append(CONSTRUCTOR_FORMAT);
+        constructor.append(CONSTRUCTOR_FORMAT);
         jsonMap.keySet().forEach(key -> {
 
             if (jsonMap.get(key) == null)
@@ -34,7 +34,7 @@ public class JSONServiceImpl implements JSONService {
     @Override
     public String getJavaBuilderFormat(LinkedHashMap<String, String> jsonMap) {
         StringBuilder builder = new StringBuilder();
-        builder.append("Builder format:\n").append(BUILDER_FORMAT);
+        builder.append(BUILDER_FORMAT);
         jsonMap.keySet().forEach(key -> {
             if (jsonMap.get(key) == null)
                 builder.append("\n.").append(key).append("(null)");
@@ -51,7 +51,6 @@ public class JSONServiceImpl implements JSONService {
     @Override
     public String getJavaSetterFormat(LinkedHashMap<String, String> jsonMap) {
         StringBuilder setter = new StringBuilder();
-        setter.append("Setter format: ");
         jsonMap.keySet().forEach(key -> {
             if(jsonMap.get(key) == null){
                 setter.append("\n").append(SETTER_FORMAT).append(getKey(key))
