@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.LinkedHashMap;
 
 @RestController
-@RequestMapping
 public class JsonToJavaController {
 
     @Autowired
