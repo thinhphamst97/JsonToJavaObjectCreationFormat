@@ -37,13 +37,13 @@ public class JSONServiceImpl implements JSONService {
         builder.append(BUILDER_FORMAT);
         jsonMap.keySet().forEach(key -> {
             if (jsonMap.get(key) == null)
-                builder.append("\n.").append(key).append("(null)");
+                builder.append("\n.").append(getBuilderKey(key)).append("(null)");
             else if (jsonMap.get(key).equals(""))
-                builder.append("\n.").append(key).append("(\"\")");
+                builder.append("\n.").append(getBuilderKey(key)).append("(\"\")");
             else if (StringUtils.isNumeric(jsonMap.get(key)))
-                    builder.append("\n.").append(key).append("(").append(jsonMap.get(key)).append(")");
+                    builder.append("\n.").append(getBuilderKey(key)).append("(").append(jsonMap.get(key)).append(")");
                 else
-                    builder.append("\n.").append(key).append("(\"").append(jsonMap.get(key)).append("\")");
+                    builder.append("\n.").append(getBuilderKey(key)).append("(\"").append(jsonMap.get(key)).append("\")");
         });
         return builder.substring(0, builder.length() - 1) + ").build();";
     }
@@ -73,5 +73,10 @@ public class JSONServiceImpl implements JSONService {
             else if(key.charAt(i) != '_') result.append(key.charAt(i));
         }
         return result.toString();
+    }
+
+    private String getBuilderKey(String key){
+        String result = getKey(key);
+        return result.substring(0,1).toLowerCase().concat(result.substring(1));
     }
 }
