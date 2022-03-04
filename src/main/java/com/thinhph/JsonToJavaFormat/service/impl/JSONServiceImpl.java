@@ -82,7 +82,7 @@ public class JSONServiceImpl implements JSONService {
                 setter.append(LINE_BREAK)
                         .append(SETTER_FORMAT)
                         .append(getKey(key))
-                        .append("\"\"");
+                        .append("(\"\");");
             } else if (StringUtils.isNumeric(jsonMap.get(key)))
                 setter.append(LINE_BREAK)
                         .append(SETTER_FORMAT)

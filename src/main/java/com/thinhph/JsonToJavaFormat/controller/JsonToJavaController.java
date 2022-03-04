@@ -21,10 +21,12 @@ public class JsonToJavaController {
     public ResponseEntity convertJsonToConstrucor(@RequestBody LinkedHashMap<String, String> json){
         return ResponseEntity.ok(jsonService.getJavaConstructorFormat(json));
     }
+
     @PostMapping("/builder")
     public ResponseEntity convertJsonToBuilder(@RequestBody LinkedHashMap<String, String> json){
         return ResponseEntity.ok(jsonService.getJavaBuilderFormat(json));
     }
+
     @PostMapping("/setter")
     public ResponseEntity convertJsonToBuilderSetter(@RequestBody LinkedHashMap<String, String> json){
         return ResponseEntity.ok(jsonService.getJavaSetterFormat(json));
