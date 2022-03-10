@@ -5,20 +5,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
+import static com.thinhph.JsonToJavaFormat.constant.Constant.*;
 
 @Service
 public class JSONServiceImpl implements JSONService {
-
-    public static final String SETTER_FORMAT = "myObject.set";
-    public static final String BUILDER_FORMAT = "MyObject.builder().";
-    public static final String CONSTRUCTOR_FORMAT = "MyObject(";
-    public static final char DASH = '_';
-    public static final String LINE_BREAK = "\n";
-    public static final String NULL_VALUE = "null";
-    public static final String END_BUILDER = ").build();";
-    public static final String EMPTY = "\"\"";
-    public static final String QUOTATION_MARK = "\"";
-    public static final String COMMA = ", ";
 
     @Override
     public String getJavaConstructorFormat(LinkedHashMap<String, String> jsonMap) {
