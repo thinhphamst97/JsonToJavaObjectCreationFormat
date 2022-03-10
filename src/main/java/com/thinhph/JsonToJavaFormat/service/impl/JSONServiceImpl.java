@@ -11,31 +11,28 @@ public class JSONServiceImpl implements JSONService {
 
     public static final String SETTER_FORMAT = "myObject.set";
     public static final String BUILDER_FORMAT = "MyObject.builder().";
-    public static final String CONSTRUCTOR_FORMAT = "myObject(";
+    public static final String CONSTRUCTOR_FORMAT = "MyObject(";
     public static final char DASH = '_';
     public static final String LINE_BREAK = "\n";
-    public static final String NULL_VALUE = "(null)";
+    public static final String NULL_VALUE = "null";
+    public static final String END_BUILDER = ").build();";
+    public static final String EMPTY = "\"\"";
+    public static final String QUOTATION_MARK = "\"";
+    public static final String COMMA = ", ";
 
     @Override
     public String getJavaConstructorFormat(LinkedHashMap<String, String> jsonMap) {
         StringBuilder constructor = new StringBuilder();
         constructor.append(CONSTRUCTOR_FORMAT);
         jsonMap.keySet().forEach(key -> {
-
             if (jsonMap.get(key) == null)
-                constructor.append("null")
-                        .append(", ");
+                setNextAttributeConstructor(jsonMap, constructor, key, NULL_VALUE);
             else if (jsonMap.get(key).equals(""))
-                constructor.append("\"\"")
-                        .append(", ");
+                setNextAttributeConstructor(jsonMap, constructor, key, EMPTY);
             else if (StringUtils.isNumeric(jsonMap.get(key)))
-                constructor.append(jsonMap.get(key))
-                        .append(", ");
+                setNextAttributeConstructor(jsonMap, constructor, key, null);
             else
-                constructor.append("\"")
-                        .append(jsonMap.get(key))
-                        .append("\"")
-                        .append(", ");
+                setNextAttributeConstructor(jsonMap, constructor, key, getStringValue(jsonMap, key));
         });
         return constructor.substring(0, constructor.length() - 2) + ");";
     }
@@ -46,27 +43,15 @@ public class JSONServiceImpl implements JSONService {
         builder.append(BUILDER_FORMAT);
         jsonMap.keySet().forEach(key -> {
             if (jsonMap.get(key) == null)
-                builder.append(LINE_BREAK + ".")
-                        .append(getBuilderKey(key))
-                        .append(NULL_VALUE);
+                setNextBuilder(jsonMap, builder, key, NULL_VALUE);
             else if (jsonMap.get(key).equals(""))
-                builder.append(LINE_BREAK + ".")
-                        .append(getBuilderKey(key))
-                        .append("(\"\")");
+                setNextBuilder(jsonMap, builder, key, EMPTY);
             else if (StringUtils.isNumeric(jsonMap.get(key)))
-                builder.append(LINE_BREAK + ".")
-                        .append(getBuilderKey(key))
-                        .append("(")
-                        .append(jsonMap.get(key))
-                        .append(")");
+                setNextBuilder(jsonMap, builder, key, null);
             else
-                builder.append(LINE_BREAK + ".")
-                        .append(getBuilderKey(key))
-                        .append("(\"")
-                        .append(jsonMap.get(key))
-                        .append("\")");
+                setNextBuilder(jsonMap, builder, key, getStringValue(jsonMap, key));
         });
-        return builder.substring(0, builder.length() - 1) + ").build();";
+        return builder.substring(0, builder.length() - 1) + END_BUILDER;
     }
 
     @Override
@@ -74,29 +59,55 @@ public class JSONServiceImpl implements JSONService {
         StringBuilder setter = new StringBuilder();
         jsonMap.keySet().forEach(key -> {
             if (jsonMap.get(key) == null) {
-                setter.append(LINE_BREAK)
-                        .append(SETTER_FORMAT)
-                        .append(getKey(key))
-                        .append(NULL_VALUE + ";");
+                setNextSetterKey(jsonMap, setter, key, NULL_VALUE);
             } else if (jsonMap.get(key).equals("")) {
-                setter.append(LINE_BREAK)
-                        .append(SETTER_FORMAT)
-                        .append(getKey(key))
-                        .append("(\"\");");
+                setNextSetterKey(jsonMap, setter, key, EMPTY);
             } else if (StringUtils.isNumeric(jsonMap.get(key)))
-                setter.append(LINE_BREAK)
-                        .append(SETTER_FORMAT)
-                        .append(getKey(key))
-                        .append("(")
-                        .append(jsonMap.get(key))
-                        .append(");");
+                setNextSetterKey(jsonMap, setter, key, null);
             else
-                setter.append(LINE_BREAK).append(SETTER_FORMAT).append(getKey(key)).append("(\"").append(jsonMap.get(key)).append("\");");
+                setNextSetterKey(jsonMap, setter, key, getStringValue(jsonMap, key));
         });
         return setter.toString();
     }
 
-    private String getKey(String key) {
+    private String getStringValue(LinkedHashMap<String, String> jsonMap, String key) {
+        return QUOTATION_MARK + jsonMap.get(key) + QUOTATION_MARK;
+    }
+
+    private void setNextAttributeConstructor(LinkedHashMap<String, String> jsonMap, StringBuilder constructor, String key, String otherValue) {
+        if(StringUtils.isEmpty(otherValue))
+            constructor.append(jsonMap.get(key));
+        else
+            constructor.append(otherValue);
+        constructor.append(COMMA);
+    }
+
+    private void setNextBuilder(LinkedHashMap<String, String> jsonMap, StringBuilder builder, String key, String otherValue) {
+        builder.append(LINE_BREAK + ".")
+                .append(getNextBuilderKey(key))
+                .append("(");
+        if(StringUtils.isEmpty(otherValue))
+                builder.append(jsonMap.get(key));
+        else
+            builder.append(otherValue);
+        builder.append(")");
+    }
+
+    private void setNextSetterKey(LinkedHashMap<String, String> jsonMap, StringBuilder setter, String key, String otherValue) {
+        setter.append(LINE_BREAK).append(SETTER_FORMAT).append(getNextObjectKey(key)).append("(");
+        if(StringUtils.isEmpty(otherValue))
+            setter.append(jsonMap.get(key));
+        else
+            setter.append(otherValue);
+        setter.append(");");
+    }
+
+    private String getNextBuilderKey(String key) {
+        String result = getNextObjectKey(key);
+        return result.substring(0, 1).toLowerCase().concat(result.substring(1));
+    }
+
+    private String getNextObjectKey(String key) {
         StringBuilder result = new StringBuilder();
         result.append(key.substring(0, 1).toUpperCase());
         for (int i = 1; i < key.length(); i++) {
@@ -104,10 +115,5 @@ public class JSONServiceImpl implements JSONService {
             else if (key.charAt(i) != DASH) result.append(key.charAt(i));
         }
         return result.toString();
-    }
-
-    private String getBuilderKey(String key) {
-        String result = getKey(key);
-        return result.substring(0, 1).toLowerCase().concat(result.substring(1));
     }
 }
