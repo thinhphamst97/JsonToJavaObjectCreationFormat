@@ -80,7 +80,7 @@ public class JSONServiceImpl implements JSONService {
                 builder.append(jsonMap.get(key));
         else
             builder.append(otherValue);
-        builder.append(").");
+        builder.append(")");
     }
 
     private void setNextSetterKey(LinkedHashMap<String, String> jsonMap, StringBuilder setter, String key, String otherValue) {
