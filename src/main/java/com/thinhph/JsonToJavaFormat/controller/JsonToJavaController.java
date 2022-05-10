@@ -27,7 +27,7 @@ public class JsonToJavaController {
         return ResponseEntity.ok(jsonService.getJavaBuilderFormat(json));
     }
 
-    @PostMapping("/setter")
+    @PostMapping("/setterer")
     public ResponseEntity convertJsonToBuilderSetter(@RequestBody LinkedHashMap<String, String> json){
         return ResponseEntity.ok(jsonService.getJavaSetterFormat(json));
     }
